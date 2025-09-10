@@ -71,6 +71,28 @@ ColumnLayout {
       Layout.fillWidth: true
     }
 
+    // Unlock Hook Section
+    NInputAction {
+      id: unlockScreenHookInput
+      label: "Unlock Hook"
+      description: "Command to be executed when screen has been unlocked."
+      placeholderText: "e.g., notify-send \"Hello\" \"Hello World!\""
+      text: Settings.data.hooks.unlockScreenChange
+      onEditingFinished: {
+        Settings.data.hooks.unlockScreenChange = unlockScreenHookInput.text
+      }
+      onActionClicked: {
+        if (unlockScreenHookInput.text) {
+          HooksService.executeUnlockScreenHook()
+        }
+      }
+      Layout.fillWidth: true
+    }
+
+    NDivider {
+      Layout.fillWidth: true
+    }
+
     // Info section
     ColumnLayout {
       spacing: Style.marginM * scaling

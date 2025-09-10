@@ -16,6 +16,7 @@ import qs.Modules.Audio
 Loader {
   id: lockScreen
   active: false
+  signal unlocked
 
   Timer {
     id: unloadAfterUnlockTimer
@@ -27,6 +28,7 @@ Loader {
   }
 
   function scheduleUnloadAfterUnlock() {
+    unlocked()
     unloadAfterUnlockTimer.start()
   }
 

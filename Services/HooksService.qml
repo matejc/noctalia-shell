@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import qs.Commons
 import qs.Services
+import qs.Modules.LockScreen
 
 Singleton {
   id: root
@@ -20,6 +21,13 @@ Singleton {
     target: WallpaperService
     function onWallpaperChanged(screenName, path) {
       executeWallpaperHook(path, screenName)
+    }
+  }
+
+  Connections {
+    target: PanelService.lockScreen
+    function onUnlocked() {
+      executeUnlockScreenHook()
     }
   }
 
@@ -61,6 +69,26 @@ Singleton {
       Logger.log("HooksService", `Executed dark mode hook: ${command}`)
     } catch (e) {
       Logger.error("HooksService", `Failed to execute dark mode hook: ${e}`)
+    }
+  }
+
+  // Execute unlock screen hook
+  function executeUnlockScreenHook() {
+    if (!Settings.data.hooks?.enabled) {
+      return
+    }
+
+    const script = Settings.data.hooks?.unlockScreenChange
+    if (!script || script === "") {
+      return
+    }
+
+    try {
+      const command = script
+      Quickshell.execDetached(["sh", "-c", command])
+      Logger.log("HooksService", `Executed unlock screen hook: ${command}`)
+    } catch (e) {
+      Logger.error("HooksService", `Failed to execute unlock screen hook: ${e}`)
     }
   }
 
